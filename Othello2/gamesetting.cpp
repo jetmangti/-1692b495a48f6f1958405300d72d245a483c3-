@@ -16,7 +16,7 @@ void GameSetting::setGameMode(int gameMode)
 
 bool GameSetting::isStoneFreezing()
 {
-    return stoneFreezing;
+    return this->stoneFreezing;
 }
 
 void GameSetting::setStoneFreezing(bool stoneFreezing)

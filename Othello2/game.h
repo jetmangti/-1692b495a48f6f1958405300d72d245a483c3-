@@ -40,9 +40,16 @@ public:
     GameSetting * getGs();
     GameController *getGc();
     AISelector* getAs();
+    void reloadSelPads();
+    void clearSelPads();
+    void freezerBody();
     void recordAll();
     void saveGame();
     void loadGame();
+    int getWRem();
+    int getBRem();
+    int getBlack();
+    int getWhite();
     void undo();
     bool isEndGame();
     bool isAiThinking();
@@ -52,9 +59,10 @@ public:
     void setRenderRefreshed();
     void toDo(Cell*);
     void actualizeScore();
+    void aiDo();
     void update();
     void doMarker();
-    bool putTo(int,int);                        //UI input function
+    bool putTo(int,int);
     bool putToTeam(int,int,int);                //UI input function
 };
 

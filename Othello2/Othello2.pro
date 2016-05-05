@@ -18,7 +18,9 @@ SOURCES += main.cpp \
     gamesetting.cpp \
     cligame.cpp \
     guigame.cpp \
-    game.cpp
+    game.cpp \
+    gamewindow.cpp \
+    statswindow.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -34,7 +36,15 @@ HEADERS += \
     cligame.h \
     guigame.h \
     game.h \
-    runnable.h
+    runnable.h \
+    gamewindow.h \
+    statswindow.h
 
 FORMS    += mainwindow.ui \
-    mainwindow.ui
+    8x8.ui \
+    10x10.ui \
+    12x12.ui \
+    stats.ui \
+    mainwindow.ui \
+    gamewindow.ui \
+    statswindow.ui

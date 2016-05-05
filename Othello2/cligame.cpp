@@ -158,6 +158,7 @@ void cliGame::render()
         }
         cout << endl <<endl;
     }
+    this->game->setRenderRefreshed();
 }
 void cliGame::run()         //main game loop
 {
@@ -188,6 +189,7 @@ void cliGame::run()         //main game loop
         char action;
         do
         {
+            cout << "Score \t\t: black:" << this->game->getBlack()<< " VS white:" << this->game->getWhite() <<endl;
             cout << "Your next action : (c - continue, u - undo, s - save) :";
             cin >> action;
             cout <<endl;
@@ -203,14 +205,14 @@ void cliGame::run()         //main game loop
                     {
                         cout << "Black player, enter the X coord :" ;
                         cin >> x;
-                        cout << endl <<"Black player, enter the Y coord :" <<endl;
+                        cout << endl <<"Black player, enter the Y coord :";
                         cin >> y;
                     }
                     else
                     {
                         cout << "White player, enter the X coord :" ;
                         cin >> x;
-                        cout << endl <<"White player, enter the Y coord :" <<endl;
+                        cout << endl <<"White player, enter the Y coord :";
                         cin >> y;
                     }
                     stat=this->game->putTo(x,y);
@@ -224,6 +226,11 @@ void cliGame::run()         //main game loop
                     }
                 }
                 while(stat != true);
+               /* if(this->game->getGs()->getGameMode()==0)    //je AI
+                {
+                    this->render();
+                    this->game->aiDo();
+                }*/
             }
         }
         else if(action == 'u')

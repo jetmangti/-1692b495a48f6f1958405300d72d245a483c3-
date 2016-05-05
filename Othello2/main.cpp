@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "includes.h"
 #include <QApplication>
+#include <QPushButton>
+#include <QWidget>
+#include <QBoxLayout>
 
 #include "cligame.h"
 
@@ -35,6 +38,15 @@ int main(int argc, char *argv[])
                 cout << "You have selected GUI version, switching to GUI, please wait..." << endl;
                 QApplication a(argc, argv);
                 MainWindow w;
+              /*//////  QWidget * wdg = new QWidget();
+                QVBoxLayout *lout = new QVBoxLayout(wdg);
+                QPushButton *btn1 = new QPushButton("btn1");
+                QPushButton *btn2 = new QPushButton("btn2");
+                QPushButton *btn3 = new QPushButton("btn3");
+                lout->addWidget(btn1);
+                lout->addWidget(btn2);
+                lout->addWidget(btn3);
+                w.setCentralWidget(wdg);*/
                 w.show();
                 return a.exec();
                 break;
