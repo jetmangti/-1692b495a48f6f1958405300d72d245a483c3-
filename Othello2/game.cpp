@@ -329,13 +329,10 @@ void Game::aiDo()
         {
             aiStone = ai2->doJob();
         }
-        cout << "AFTER" <<endl;
         if(!aiStone)
         {
-            cout << "AFTER2" <<endl;
             ///wm.endGame(gc.getTeamID(), black, white);
             this->endGame=true;
-            cout << "AFTER3" <<endl;
             return;
            /// win.dispose();
         }
@@ -355,13 +352,11 @@ void Game::aiDo()
 
 void Game::toDo(Cell* temp)
 {
-    cout << "ENTER" <<endl;
     if(!this->endGame)
     {
         this->recordAll();
         if(state == 1)
         {
-            cout << "BEFORE" <<endl;
             //this->cf->resetEmpty();
             this->gc->placeStone(temp);
             this->cf->turnStones(temp->getXPos(),temp->getYPos(),this->gc->getActualPlayer());   // turns opponents stones and gc.getActualPlayer
@@ -469,7 +464,6 @@ void Game::freezerBody(int id)
     while(true){
         int x = uni(range);
         int y = uni(range);
-        //cout << "[" << id << "]" << x << ": "<< y <<endl;
         int timeToSleep = uniFreezed(rangeFreezed)+ this->getGs()->getI_var();
         if(this->board.at(x).at(y)->getTeam() != EMPTY && !this->board.at(x).at(y)->getFreezed())
         {
