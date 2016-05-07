@@ -1,5 +1,13 @@
 #include "gamesetting.h"
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 
+///settings getters and setters...
 GameSetting::GameSetting()
 {
 

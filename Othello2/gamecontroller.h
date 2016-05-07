@@ -3,7 +3,14 @@
 
 #include "includes.h"
 #include "cell.h"
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
+//description in cpp file
 class GameController
 {
 private:

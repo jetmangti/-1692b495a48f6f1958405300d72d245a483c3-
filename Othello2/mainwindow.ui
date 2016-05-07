@@ -6,19 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>593</width>
-    <height>477</height>
+    <width>600</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Othello</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="playBtn">
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>150</y>
+      <y>320</y>
       <width>131</width>
       <height>41</height>
      </rect>
@@ -31,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>230</y>
+      <y>400</y>
       <width>131</width>
       <height>41</height>
      </rect>
@@ -43,10 +46,10 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
+      <x>20</x>
+      <y>110</y>
       <width>421</width>
-      <height>431</height>
+      <height>391</height>
      </rect>
     </property>
     <property name="title">
@@ -317,25 +320,31 @@
       </property>
      </widget>
     </widget>
-    <zorder>groupBox</zorder>
-    <zorder>groupBox_3</zorder>
-    <zorder>groupBox_4</zorder>
-    <zorder>loadBtn</zorder>
-    <zorder>exitBtn</zorder>
-    <zorder>playBtn</zorder>
-    <zorder>groupBox_5</zorder>
    </widget>
    <widget class="QPushButton" name="loadBtn">
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>190</y>
+      <y>360</y>
       <width>131</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>Load last</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>601</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

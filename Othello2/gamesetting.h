@@ -1,7 +1,13 @@
 #ifndef GAMESETTING_H
 #define GAMESETTING_H
-
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
+//description in cpp file
 class GameSetting
 {
 private:

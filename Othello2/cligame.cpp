@@ -1,19 +1,19 @@
 #include "cligame.h"
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 cliGame::cliGame()
 {
     int size;
     int mode;
     bool loadB = false;
     this->gs = new GameSetting();
-    /*this->gs->setAiMode(1);
-    this->gs->setSize(0);
-    this->gs->setMaxFreezed(0);
-    this->gs->setB_var(0);
-    this->gs->setI_var(0);
-    this->gs->setInstancies(0);
-    this->gs->setGameMode(0);
-    this->gs->setStoneFreezing(0);*/
+
+    //////////////////////////////// initial settings questions.../////////////////////////////
     char load;
     do
     {
@@ -105,7 +105,6 @@ cliGame::cliGame()
             this->gs->setMaxFreezed(count);
         }
     }
-    ////////////////////TO BE CONTINUED, I, B , COUNT////////////////////////
 
     if(loadB)
     {
@@ -121,7 +120,7 @@ cliGame::cliGame()
     this->board = this->game->getBoard();
     this->selectionPads = this->game->getSelectionPads();
 }
-void cliGame::render()
+void cliGame::render() //render routine (it is not in separate thread like in GUI, this one checks for flag set by Game class
 {
     this->selectionPads = this->game->getSelectionPads();
     cout << "\t";
@@ -135,30 +134,30 @@ void cliGame::render()
         cout << i << "\t";
         for(int j=0; j<this->game->getGs()->getSize(); j++)
         {
-            if(this->selectionPads->at(j).at(i) == true)
+            if(this->selectionPads->at(j).at(i) == true) //mark possible placement with #
             {
                 cout <<"[#]\t";
             }
-            else if(this->board->at(j).at(i)->getTeam() == BLACK)
+            else if(this->board->at(j).at(i)->getTeam() == BLACK) // mark black cell with B
             {
                 cout << "[B]\t";
             }
-            else if(this->board->at(j).at(i)->getTeam() == WHITE)
+            else if(this->board->at(j).at(i)->getTeam() == WHITE) // mark white cell with W
             {
                 cout << "[W]\t";
             }
-            else if(this->board->at(j).at(i)->getTeam() == BLACK_FR || this->board->at(j).at(i)->getTeam() == WHITE_FR)
+            else if(this->board->at(j).at(i)->getTeam() == BLACK_FR || this->board->at(j).at(i)->getTeam() == WHITE_FR) //mark freezed cell with F
             {
                 cout << "[F]\t";
             }
             else
             {
-                cout << "[ ]\t";
+                cout << "[ ]\t"; // mark blank cell with whitespace
             }
         }
         cout << endl <<endl;
     }
-    this->game->setRenderRefreshed();
+    this->game->setRenderRefreshed(); //communication with Game class
 }
 void cliGame::run()         //main game loop
 {
@@ -166,10 +165,10 @@ void cliGame::run()         //main game loop
     bool stat;
 
     this->game->run();
-    do
+    do  //while game is not over repeat the following routine
     {
-        this->game->update();
-        if(this->game->getGs()->getGameMode()==1)
+        this->game->update();   //update
+        if(this->game->getGs()->getGameMode()==1) //check if use AI
         {
             if(this->game->isAiThinking() == true)
             {
@@ -181,13 +180,13 @@ void cliGame::run()         //main game loop
                 this->render();
             }
         }
-        if(this->game->getRenderRefresh())
+        if(this->game->getRenderRefresh())  //refresh render
         {
             this->render();
             this->game->setRenderRefreshed();
         }
         char action;
-        do
+        do  //print out the result and ask for next action
         {
             cout << "Score \t\t: black:" << this->game->getBlack()<< " VS white:" << this->game->getWhite() <<endl;
             cout << "Your next action : (c - continue, u - undo, s - save) :";
@@ -195,7 +194,7 @@ void cliGame::run()         //main game loop
             cout <<endl;
         }
         while(action != 's' && action != 'u' && action != 'c');
-        if(action == 'c')
+        if(action == 'c') //read in the coords
         {
             if(this->game->isWaitingForInput())
             {

@@ -6,7 +6,13 @@
 #include "gamecontroller.h"
 #include "gamesetting.h"
 #include "aiselector.h"
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 
 class cliGame
 {

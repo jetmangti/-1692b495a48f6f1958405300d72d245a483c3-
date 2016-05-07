@@ -1,6 +1,12 @@
 #ifndef STATSWINDOW_H
 #define STATSWINDOW_H
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 #include <QDialog>
 
 namespace Ui {
@@ -13,6 +19,7 @@ class StatsWindow : public QDialog
 
 public:
     explicit StatsWindow(QWidget *parent = 0);
+    void setStats(int,int);
     ~StatsWindow();
 
 private slots:

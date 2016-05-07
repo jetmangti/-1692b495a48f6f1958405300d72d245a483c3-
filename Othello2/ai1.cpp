@@ -1,13 +1,20 @@
 #include "ai1.h"
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 
-
-AI1::AI1(CellFinder* cf,GameController* gc,int size,int team,vector< vector< Cell*>>* matrix)
+AI1::AI1(CellFinder* cf,GameController* gc,int size,int team,vector< vector< Cell*>>* matrix) //AI1 constructor
 {
     this->gc = gc;
     this->cf = cf;
+    st = this->cf->getCellList();
     this->team = team;
     this->tactic.resize((size), vector<int>(size));
-    for(int i=0; i<size; i++)
+    for(int i=0; i<size; i++)       //compute tactic values (based on real life tactics developed by real othello players)
     {
         for(int j=0; j<size; j++)
         {
@@ -52,7 +59,7 @@ AI1::AI1(CellFinder* cf,GameController* gc,int size,int team,vector< vector< Cel
         ///System.out.print("\n");
     }
 }
-bool AI1::getTeam()
+bool AI1::getTeam() //utility
 {
     if(team == 0)
         {
@@ -64,28 +71,26 @@ bool AI1::getTeam()
         }
 }
 
-int AI1::getPriceModifier(int x,int y)
+int AI1::getPriceModifier(int x,int y)  //get price computed before for a cell
 {
     return this->tactic[y][x];
 }
-Cell* AI1::doJob()
+Cell* AI1::doJob()  //routine
 {
-    vector<Cell*>* st;
     Cell* max;
     int maxPrice;
 
-    this->cf->resetEmpty();
-    this->cf->setPadsVisibility(false);
-    if( this->cf->recalculateAndMark(this->team)==0)
+    //this->cf->resetEmpty();
+    //this->cf->setPadsVisibility(false);
+   /* if( this->cf->recalculateAndMark(this->team)==0)
     {
         return NULL;
-    }
-    st = this->cf->getCellList();
-    if(!st->empty())
+    }*/
+    if(!this->st->empty())
     {
         max = st->back();
         maxPrice = max->getPrice()*this->getPriceModifier(max->getXPos(), max->getYPos());
-        for(Cell* choice: (*st))
+        for(Cell* choice: (*st))    //find the best solution according to heuristics
         {
             if(choice->getPrice()*this->getPriceModifier(choice->getXPos(), choice->getYPos()) > maxPrice)
             {
@@ -103,13 +108,14 @@ Cell* AI1::doJob()
         {
             ///AIPlay1->last->setBackground(Color.white);
         }
-        this->last = max;
+        this->last = max;//save
         ///max->setBackground(Color->magenta);
-        return max;
+        return max;//return
     }
     else
     {
         //System.out.println("EMPTY STACK");
-        return new Cell(-1,-1,-1,-1,-1);
+        //return new Cell(-1,-1,-1,-1,-1);
+        return NULL; // else null
     }
 }

@@ -1,80 +1,93 @@
 #include "cellfinder.h"
 
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 
-CellFinder::CellFinder()
+CellFinder::CellFinder()    //empty constructor...
 {
 
 }
 
-CellFinder::CellFinder(int size,vector<vector<Cell *>>* matrix)
+CellFinder::CellFinder(int size,vector<vector<Cell *>>* matrix) //constructor sets references
 {
     this->size = size;
     this->matrix = matrix;
 }
-
-Cell* CellFinder::getNextCell(int x,int y,int dir)
+void CellFinder::hidePads()
 {
-    switch(dir)
+ //used for port issues
+}
+
+Cell* CellFinder::getNextCell(int x,int y,int dir)  //get neighbour cell
+{
+    //0=y_up 1=y_down 2=x_right 3=x_left 4=x_left_y_up 5=x_right_y_down 6=x_right_y_up 7=x_left_y_down
+    switch(dir)     // do the same thing for different directions
     {
         case 0:
         {
-            if(x>=0 && x<this->size && y-1>=0 && y-1 < this->size)
-                return matrix->at(x).at(y-1);
+            if(x>=0 && x<this->size && y-1>=0 && y-1 < this->size)  // check for bounds
+                return matrix->at(x).at(y-1);   //return cell at x and y-1
             break;
         }
         case 1:
         {
-            if(x>=0 && x<this->size && y+1>=0 && y+1 < this->size)
-                return matrix->at(x).at(y+1);
+            if(x>=0 && x<this->size && y+1>=0 && y+1 < this->size)  //...
+                return matrix->at(x).at(y+1); //...
             break;
         }
         case 2:
         {
-            if(x+1>=0 && x+1<this->size && y>=0 && y < this->size)
-                return matrix->at(x+1).at(y);
+            if(x+1>=0 && x+1<this->size && y>=0 && y < this->size)//...
+                return matrix->at(x+1).at(y);//...
             break;
         }
         case 3:
         {
-            if(x-1>=0 && x-1<this->size && y>=0 && y < this->size)
-                return matrix->at(x-1).at(y);
+            if(x-1>=0 && x-1<this->size && y>=0 && y < this->size)//...
+                return matrix->at(x-1).at(y);//...
             break;
         }
         case 4:
         {
-            if(x-1>=0 && x-1<this->size && y-1>=0 && y-1 < this->size)
-                return matrix->at(x-1).at(y-1);
+            if(x-1>=0 && x-1<this->size && y-1>=0 && y-1 < this->size)//....
+                return matrix->at(x-1).at(y-1);//...
             break;
         }
         case 5:
         {
-            if(x+1>=0 && x+1<this->size && y+1>=0 && y+1 < this->size)
-                return matrix->at(x+1).at(y+1);
+            if(x+1>=0 && x+1<this->size && y+1>=0 && y+1 < this->size)//...
+                return matrix->at(x+1).at(y+1);//...
             break;
         }
         case 6:
         {
-            if(x+1>=0 && x+1<this->size && y-1>=0 && y-1 < this->size)
-                return matrix->at(x+1).at(y-1);
+            if(x+1>=0 && x+1<this->size && y-1>=0 && y-1 < this->size)//...
+                return matrix->at(x+1).at(y-1);//...
             break;
         }
         case 7:
         {
-            if(x-1>=0 && x-1<this->size && y+1>=0 && y+1 < this->size)
-                return matrix->at(x-1).at(y+1);
+            if(x-1>=0 && x-1<this->size && y+1>=0 && y+1 < this->size)//..
+                return matrix->at(x-1).at(y+1);//...
             break;
         }
         default:
         {
-            return matrix->at(x).at(y);
+            return matrix->at(x).at(y); // default cell is cell at x y
         }
     }
-    return new Cell(-1,-1,0,0,0);
+    return new Cell(-1,-1,0,0,0);   //return random cell
 }
 
-void CellFinder::rayCast(int x,int y,int team)
+int CellFinder::rayCast(int x,int y,int team)   //raycast, find all the possible free spaces via raycast method
 {
     Cell* temp;
+    int cntr=0;
     this->lastState = this->st;
     for(int dir=0; dir < 8; dir++) 	//0=y_up 1=y_down 2=x_right 3=x_left 4=x_left_y_up 5=x_right_y_down 6=x_right_y_up 7=x_left_y_down
     {
@@ -84,7 +97,7 @@ void CellFinder::rayCast(int x,int y,int team)
         bool fail = false;
         bool success = false;
         this->priceCounter = 0;
-        do
+        do  // automat start
         {
             temp = getNextCell(tempx,tempy,dir);
             tempx = temp->getXPos();
@@ -94,13 +107,13 @@ void CellFinder::rayCast(int x,int y,int team)
                 fail = true;
                 break;
             }
-            if(team == BLACK)
+            if(team == BLACK)   // implementation used if actually examined stone is black
             {
-                switch(state)
+                switch(state)   //fsm
                 {
                     case 0:
                     {
-                        if(temp->getTeam() == WHITE)
+                        if(temp->getTeam() == WHITE)    //if next cell is white ok
                         {
                             state = 1; // white continue;
                             this->priceCounter++;
@@ -117,18 +130,14 @@ void CellFinder::rayCast(int x,int y,int team)
                         {
                             state = 4; //black = fail
                         }
-                        else if(temp->getTeam() == EMPTY)
+                        else if(temp->getTeam() == EMPTY)   //free cell found
                         {
                             this->st.push_back(temp);
                            /// temp->setContentAreaFilled(true);
                             success = true;
-                           /* if(this->visibility)
-                            {
-                                temp->setBackground(Color.getHSBColor(0.08f,1.0f,1.0f));
-                                temp->setEnabled(true);
-                            }*/
                             temp->setPrice(this->priceCounter);
                             this->counter++;
+                            cntr++;
                             break;
                         }
                         else
@@ -138,7 +147,7 @@ void CellFinder::rayCast(int x,int y,int team)
                             break;
                         }
                     }
-                    case 4://fail
+                    case 4://fail state
                     {
                         fail = true;
                         this->priceCounter = 0;
@@ -150,13 +159,13 @@ void CellFinder::rayCast(int x,int y,int team)
                     }
                 }
             }
-            else
+            else  // implementation used if actually examined stone is white
             {
-                switch(state)
+                switch(state)//fsm
                 {
                     case 0:
                     {
-                        if(temp->getTeam() == BLACK)
+                        if(temp->getTeam() == BLACK) //if next cell is black ok
                         {
                             state = 1; // white continue;
                             this->priceCounter++;
@@ -173,18 +182,13 @@ void CellFinder::rayCast(int x,int y,int team)
                         {
                             state = 4; //black = fail
                         }
-                        else if(temp->getTeam() == EMPTY)
+                        else if(temp->getTeam() == EMPTY)   // free cell found
                         {
                             success = true;
                             this->st.push_back(temp);
-                            ///temp->setContentAreaFilled(true);
-                           /// if(this->visibility)
-                           /// {
-                            ///    temp->setBackground(Color.getHSBColor(0.08f,1.0f,1.0f));
-                             ///   temp->setEnabled(true);
-                           /// }
                             temp->setPrice(this->priceCounter);
                             this->counter++;
+                            cntr++;
                             break;
                         }
                         else
@@ -195,7 +199,7 @@ void CellFinder::rayCast(int x,int y,int team)
                         }
                     }
 
-                    case 4://fail
+                    case 4://fail state
                     {
                         fail = true;
                         this->priceCounter = 0;
@@ -208,47 +212,29 @@ void CellFinder::rayCast(int x,int y,int team)
                 }
             }
         }
-        while(!fail && !success);
+        while(!fail && !success);   // do while not fail or success flag set
     }
+    return cntr;    //return number of found cells
 }
 
-void CellFinder::clearStack()
+void CellFinder::clearStack()       //clear stack
 {
     this->st.clear();
 }
 
-vector<Cell*>* CellFinder::getCellList()
+vector<Cell*>* CellFinder::getCellList()    //return reference to list of possible stone placements
 {
-       /* for (Cell cont : st)
-        {
-            cont.setEnabled(false);
-            cont.setContentAreaFilled(false);
-        }*/
         return &this->st;
 }
 
-void CellFinder::resetEmpty()
+void CellFinder::resetEmpty()   //reset stack of possible placements
 {
-    /*for (Cell cont : st)
-    {
-        cont.setEnabled(false);
-        cont.setContentAreaFilled(false);
-    }*/
     this->clearStack();
 }
 
-void CellFinder::hidePads()
-{
-   /* for(Cell cont : st)
-            {
-                //cont.setEnabled(false);
-                cont.setContentAreaFilled(false);
-                //cont.setPrice(0);
-                //cont.setBlank();
-            }*/
-}
 
-void CellFinder::resetEmptyAll()
+
+void CellFinder::resetEmptyAll()    //reset all stacks
 {
     this->counter=0;
     for(Cell* cont : lastState)
@@ -262,28 +248,30 @@ void CellFinder::resetEmptyAll()
            /// matrix[i][j].setEnabled(false);
           ///  matrix[i][j].setContentAreaFilled(false);
             //matrix[i][j].undo();
-            this->clearStack();
+
         }
     }
+    this->clearStack();
 }
 
-int CellFinder::recalculateAndMark(int team)
+int CellFinder::recalculateAndMark(int team)    // find and mark possible places where can be stone put
 {
     this->counter=0;
+    int cntr=0;
     for(int i=0; i < this->size; i++)
     {
         for(int j=0; j < this->size; j++)
         {
             if(this->matrix->at(i).at(j)->team != EMPTY && this->matrix->at(i).at(j)->team != team && (this->matrix->at(i).at(j)->team == BLACK || this->matrix->at(i).at(j)->team == WHITE))
             {
-                rayCast(i,j,matrix->at(i).at(j)->team);
+                cntr = rayCast(i,j,matrix->at(i).at(j)->team);  // Do a raycast from every stone
             }
         }
     }
-    return this->counter;
+    return cntr;
 }
 
-void CellFinder::setPadsVisibility(bool vis)
+void CellFinder::setPadsVisibility(bool vis)    //set visibility (render utility)
 {
     this->visibility = vis;
 }

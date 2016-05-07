@@ -8,7 +8,14 @@
 #include "aiselector.h"
 #include "ai1.h"
 #include "ai2.h"
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
+//description in cpp file
 class Game
 {
 private :
@@ -42,7 +49,7 @@ public:
     AISelector* getAs();
     void reloadSelPads();
     void clearSelPads();
-    void freezerBody();
+    void freezerBody(int);
     void recordAll();
     void saveGame();
     void loadGame();

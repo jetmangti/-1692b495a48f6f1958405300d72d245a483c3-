@@ -3,22 +3,31 @@
 #include "includes.h"
 #include "cell.h"
 
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
+
+//class declaration, description of each function is stored in cpp file
 using namespace std;
 class CellFinder
 {
 private:
-    vector <Cell*> st;
-    vector <Cell*> lastState;
-    int size;
-    vector <vector <Cell*>>* matrix;
-    int priceCounter = 0;
-    bool visibility = true;
-    int counter=0;
+    vector <Cell*> st;  //vector of pointers to cell objects
+    vector <Cell*> lastState;   // the same as st, but used for back check
+    int size;   // size of game
+    vector <vector <Cell*>>* matrix; //pointer to game board
+    int priceCounter = 0;   // used to compute value used by AI
+    bool visibility = true; // visibility flag
+    int counter=0; //utility counter
 public:
     CellFinder();
     CellFinder(int,vector<vector<Cell *>>*);
     Cell* getNextCell(int,int,int);
-    void rayCast(int,int,int);
+    int rayCast(int,int,int);
     void clearStack();
     vector<Cell*>* getCellList();
     void resetEmpty();

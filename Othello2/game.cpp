@@ -3,9 +3,22 @@
 #include "QThread"
 #include <chrono>
 #include <thread>
+#include <random>
+#ifdef __linux__
+#include <unistd.h>
+#endif
+#ifdef _WIN32
+#include <windows.h>
+#endif
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 Game::Game(GameSetting* gs)
 {
-       srand(time(0));
     //this->renderer = renderer;
     this->gs = gs;
     int size = this->gs->getSize();
@@ -292,85 +305,102 @@ GameController * Game::getGc()
 
 void Game::doMarker()
 {
-    if(this->cf->recalculateAndMark(this->gc->getTeamID())==0)
+    int ret = this->cf->recalculateAndMark(this->gc->getTeamID());
+    if(this->cf->getCellList()->empty())
     {
-            /*if(this.wm == null)
-            {
-                System.out.println("WM NULL");
-            }*/
-            ///this.wm.endGame(gc.getTeamID(), this.black, this.white);
-            this->endGame=true;
-            cout << "endgame" <<endl;
+        this->endGame=true;
     }
+    return;
 }
 void Game::aiDo()
 {
-    this->aiThinking=true;
-      std::this_thread::sleep_for(std::chrono::milliseconds(700));
-    state = 2;
-    this->cf->resetEmpty();
-    Cell* aiStone;
-    if(this->gs->getAiMode() == 1)
+    if(!this->endGame)
     {
-        aiStone = ai1->doJob();
+        this->aiThinking=true;
+        std::this_thread::sleep_for(std::chrono::milliseconds(750));
+        state = 2;
+        //this->cf->resetEmpty();
+        Cell* aiStone;
+        if(this->gs->getAiMode() == 1)
+        {
+            aiStone = ai1->doJob();
+        }
+        else
+        {
+            aiStone = ai2->doJob();
+        }
+        cout << "AFTER" <<endl;
+        if(!aiStone)
+        {
+            cout << "AFTER2" <<endl;
+            ///wm.endGame(gc.getTeamID(), black, white);
+            this->endGame=true;
+            cout << "AFTER3" <<endl;
+            return;
+           /// win.dispose();
+        }
+       this->cf->turnStones(aiStone->getXPos(),aiStone->getYPos(),gc->getActualPlayer());
+        this->cf->setPadsVisibility(true);
+       this->bRem--;
+       this->cf->resetEmpty();
+       this->doMarker();
+        if(this->endGame)
+        {
+            return;
+        }
+       this->state = 1;
+       this->aiThinking=false;
     }
-    else
-    {
-        aiStone = ai2->doJob();
-    }
-    if(aiStone==NULL)
-    {
-        ///wm.endGame(gc.getTeamID(), black, white);
-        this->endGame=true;
-       /// win.dispose();
-    }
-   this->cf->turnStones(aiStone->getXPos(),aiStone->getYPos(),gc->getActualPlayer());
-   this->cf->setPadsVisibility(true);
-   this->bRem--;
-   this->cf->resetEmpty();
-   this->doMarker();
-   this->state = 1;
-   this->aiThinking=false;
 }
 
 void Game::toDo(Cell* temp)
 {
-    this->recordAll();
-    if(state == 1)
+    cout << "ENTER" <<endl;
+    if(!this->endGame)
     {
-        //undoStck.push(this);
-        this->cf->resetEmpty();
-        this->gc->placeStone(temp);
-       /// Cell* placedStone =(Cell) e.getSource(); 											 // gets ID of cell where stone was added
-        this->cf->turnStones(temp->getXPos(),temp->getYPos(),this->gc->getActualPlayer());   // turns opponents stones and gc.getActualPlayer
-        if(this->gs->getGameMode() == 0)
+        this->recordAll();
+        if(state == 1)
         {
-            this->cf->setPadsVisibility(true);
+            cout << "BEFORE" <<endl;
+            //this->cf->resetEmpty();
+            this->gc->placeStone(temp);
+            this->cf->turnStones(temp->getXPos(),temp->getYPos(),this->gc->getActualPlayer());   // turns opponents stones and gc.getActualPlayer
+            if(this->gs->getGameMode() == 0)
+            {
+                this->cf->setPadsVisibility(true);
+            }
+            this->cf->resetEmpty();
+            this->doMarker();
+            if(this->cf->getCellList()->empty())
+            {
+                this->endGame = true;
+                return;
+            }
+            if(this->gs->getGameMode() == 0)
+            {
+                 state = 2;
+                 //this->cf->resetEmpty();
+                 //this->doMarker();
+            }
+            else
+            {
+                state = 1;
+            }
+          /*  if(this->gc->getTeamID()==0)
+            {
+                this->bRem--;
+            }
+            else
+            {
+                this->wRem--;
+            }*/
         }
-        this->doMarker();
-        if(this->gs->getGameMode() == 0)
+        if(this->gs->getGameMode() != 1)
         {
-             state = 2;
-             this->cf->resetEmpty();
+            this->aiDo();
         }
-        else
-        {
-            state = 1;
-        }
-        if(this->gc->getTeamID()==0)
-        {
-            this->bRem--;
-        }
-        else
-        {
-            wRem--;
-        }
+        this->actualizeScore();
     }
-    if(this->gs->getGameMode() != 1)
-    {
-        this->aiDo();
-    }
-    this->actualizeScore();
 }
 void Game::clearSelPads()
 {
@@ -426,20 +456,24 @@ void Game::reloadSelPads()
     this->cf->resetEmpty();
     doMarker();
 }
-void Game::freezerBody()
+void Game::freezerBody(int id)
 {
-    cout << "Freezer running" <<endl;
+    random_device randomCoords;
+    std::mt19937 range(randomCoords()+id);
+    uniform_int_distribution<int> uni(0,this->getGs()->getSize()-1);
+
+    random_device randomFreezed;
+    std::mt19937 rangeFreezed (randomFreezed()+id);
+    uniform_int_distribution<int> uniFreezed(0,this->getGs()->getB_var());
+
     while(true){
-        int x = rand()%(this->getGs()->getSize()-1);
-        int y = rand()%(this->getGs()->getSize()-1);
-        cout <<x << ": "<<y <<endl;
-        int timeToSleep = (rand()%(this->getGs()->getB_var()))+this->getGs()->getI_var();
+        int x = uni(range);
+        int y = uni(range);
+        //cout << "[" << id << "]" << x << ": "<< y <<endl;
+        int timeToSleep = uniFreezed(rangeFreezed)+ this->getGs()->getI_var();
         if(this->board.at(x).at(y)->getTeam() != EMPTY && !this->board.at(x).at(y)->getFreezed())
         {
-            std::cout << "GOT ONE" <<endl;
             this->board.at(x).at(y)->setFreezed();
-            //cf.resetEmpty();
-            //doMarker(gc,cf);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(timeToSleep*1000));
         if(this->board.at(x).at(y)->getTeam() != EMPTY &&this->board.at(x).at(y)->getFreezed())
@@ -477,12 +511,13 @@ void Game::update()
 void Game::run()
 {
     this->prepare();
+    thread *th;
     if(this->getGs()->isStoneFreezing())
     {
         for(int i=0; i<this->getGs()->getMaxFreezed(); i++)
         {
-            thread t(&this->freezerBody,this);
-            t.detach();
+            th = new thread(&this->freezerBody,this,i);
+            th->detach();
         }
     }
 }

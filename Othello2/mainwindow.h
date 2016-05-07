@@ -4,7 +4,13 @@
 #include <QMainWindow>
 #include "gamewindow.h"
 #include "statswindow.h"
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 namespace Ui {
 class MainWindow;
 }
@@ -19,12 +25,12 @@ public:
     void openStatWindow();
     ~MainWindow();
 
-private slots:
+private slots: //event handlers
     void handlePlayBtn();
     void handleLoadBtn();
     void handleExitBtn();
 
-private:
+private: //reference holders
     Ui::MainWindow *ui;
     GameWindow *gw;
     GameSetting *gs;

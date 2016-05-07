@@ -1,5 +1,11 @@
 #include "cell.h"
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 Cell::Cell(int size,int x, int y, int posX, int posY)       //build it
 {
     this->x = x;
@@ -27,7 +33,7 @@ void Cell::setFreezed()         //freeze the pawn
     {
         this->team=BLACK_FR;
     }
-    else
+    else  if(this->team ==WHITE)
     {
         this->team=WHITE_FR;
     }
@@ -39,7 +45,7 @@ void Cell::unsetFreezed()       //unfreeze the pawn
     {
         this->team=BLACK;
     }
-    else
+    else if(this->team == WHITE_FR)
     {
         this->team=WHITE;
     }
@@ -56,7 +62,7 @@ void Cell::resetHistory()
 {
     this->history.clear();
 }
-void Cell::recordStatus()
+void Cell::recordStatus()   // store actual team to history stack
 {
     if(this->team == BLACK)
     {
@@ -66,13 +72,22 @@ void Cell::recordStatus()
     {
         this->history.push_back(WHITE);
     }
+    else if(this->team == WHITE_FR)
+    {
+        this->history.push_back(WHITE);
+    }
+    else if(this->team == BLACK_FR)
+    {
+        this->history.push_back(BLACK);
+    }
     else
     {
         this->history.push_back(EMPTY);
     }
 
+
 }
-void Cell::undo()
+void Cell::undo()   // pop one from the history, and set the team that is on the peak
 {
     if(!this->history.empty())
     {
@@ -81,7 +96,7 @@ void Cell::undo()
     }
 }
 
-void Cell::swapTeam(bool team)
+void Cell::swapTeam(bool team)  // swap between teams
 {
     if(team)
     {
@@ -92,11 +107,11 @@ void Cell::swapTeam(bool team)
         this->setWhite();
     }
 }
-enum Team Cell::getTeam()
+enum Team Cell::getTeam()   //...
 {
    return this->team;
 }
-bool Cell::getTeamBool()
+bool Cell::getTeamBool() // returns team as boolean, true-white false-black
 {
     if(this->team==WHITE)
     {
@@ -107,19 +122,19 @@ bool Cell::getTeamBool()
         return false;
     }
 }
-int Cell::getXPos()
+int Cell::getXPos() // get x coord
 {
     return this->x;
 }
-int Cell::getYPos()
+int Cell::getYPos() // get y coord
 {
     return this->y;
 }
-void Cell::setPrice(int price)
+void Cell::setPrice(int price) // set value used by AI
 {
     this->price = price;
 }
-int Cell::getPrice()
+int Cell::getPrice() // returns value used by AI
 {
     return this->price;
 }

@@ -1,19 +1,25 @@
 #include "gamecontroller.h"
-
+/***********************************************************************************7
+ * Martin Hlipala xhlipa00
+ * Adam Bak xbakad00
+ *
+ * All rights reserved
+ *
+*/
 GameController::GameController()
 {
     this->player = true;
     this->scoreBlack = 2;
     this->scoreWhite = 2;
 }
-bool GameController::getActualPlayer()
+bool GameController::getActualPlayer() // get actual player
 {
     bool player;
     player = this->player;
     this->player = !this->player;
     return player;
 }
-int GameController::getTeamID()
+int GameController::getTeamID() //get actual team id
 {
     if(this->player==true)
     {
@@ -24,11 +30,11 @@ int GameController::getTeamID()
         return 1;
     }
 }
-void GameController::changeTeam()
+void GameController::changeTeam() // change team
 {
     this->player = !this->player;
 }
-void GameController::setTeamID(int id)
+void GameController::setTeamID(int id) //set teamId (used for init)
 {
     if(id == 0)
     {
@@ -40,11 +46,11 @@ void GameController::setTeamID(int id)
     }
 }
 
-void GameController::removeStone(Cell* btn)
+void GameController::removeStone(Cell* btn) //removeStone from board
 {
     btn->setBlank();
 }
-void GameController::placeStone(Cell* btn)
+void GameController::placeStone(Cell* btn) //place stone to board
 {
     ///this.undo.push(
     /*		new Runnable()
