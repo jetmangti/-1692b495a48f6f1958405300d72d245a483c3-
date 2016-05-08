@@ -21,9 +21,9 @@ private:
     int size;   // size of game
     vector <vector <Cell*>>* matrix; //pointer to game board
     int priceCounter = 0;   // used to compute value used by AI
-    bool visibility = true; // visibility flag
     int counter=0; //utility counter
 public:
+     bool visibility = true; // visibility flag
     CellFinder();
     CellFinder(int,vector<vector<Cell *>>*);
     Cell* getNextCell(int,int,int);

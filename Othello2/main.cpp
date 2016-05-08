@@ -15,7 +15,7 @@
 */
 using namespace std;
 
-int main(int argc, char *argv[])
+/*int main(int argc, char *argv[])
 {
     int sel;
     bool repeat;
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
                 cout << "You have selected GUI version, switching to GUI, please wait..." << endl;
                 QApplication a(argc, argv);
                 MainWindow w;
-              /*//////  QWidget * wdg = new QWidget();
+              /*//*/////  QWidget * wdg = new QWidget();
                 QVBoxLayout *lout = new QVBoxLayout(wdg);
                 QPushButton *btn1 = new QPushButton("btn1");
                 QPushButton *btn2 = new QPushButton("btn2");
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
                 lout->addWidget(btn2);
                 lout->addWidget(btn3);
                 w.setCentralWidget(wdg);*/
-                w.show();
+               /* w.show();
                 return a.exec();
                 break;
             }
@@ -67,4 +67,4 @@ int main(int argc, char *argv[])
     }
     while(repeat==true);
     return 0;
-}
+}*/

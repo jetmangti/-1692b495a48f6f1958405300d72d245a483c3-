@@ -20,6 +20,7 @@
 Game::Game(GameSetting* gs)
 {
     //this->renderer = renderer;
+    this->endGame = false;
     this->gs = gs;
     int size = this->gs->getSize();
     this->cf = new CellFinder(this->gs->getSize(),&this->board);
@@ -65,6 +66,16 @@ Game::Game()
     this->actualizeScore();
     this->renderRefresh = true;
 }
+Game::~Game()
+{
+    delete(this->ai2);
+    delete(this->ai1);
+    delete(&this->board);
+    delete(this->cf);
+    delete(this->gs);
+    delete(&this->selectionPads);
+}
+
 vector <vector <Cell*>>* Game::getBoard()        //UI output function
 {
     return &(this->board);
@@ -266,9 +277,11 @@ void Game::undo()
             }
             this->gc->changeTeam();
         }
-        this->cf->hidePads();
-        this->cf->resetEmpty();
-        doMarker();
+        if(!this->prepare())
+        {
+            this->endGame = true;
+            return;
+        }
         this->actualizeScore();
     }
 }
@@ -305,12 +318,8 @@ GameController * Game::getGc()
 
 void Game::doMarker()
 {
+    this->cf->resetEmpty();
     int ret = this->cf->recalculateAndMark(this->gc->getTeamID());
-    if(this->cf->getCellList()->empty())
-    {
-        this->endGame=true;
-    }
-    return;
 }
 void Game::aiDo()
 {
@@ -332,6 +341,7 @@ void Game::aiDo()
         if(!aiStone)
         {
             ///wm.endGame(gc.getTeamID(), black, white);
+            ///
             this->endGame=true;
             return;
            /// win.dispose();
@@ -339,15 +349,24 @@ void Game::aiDo()
        this->cf->turnStones(aiStone->getXPos(),aiStone->getYPos(),gc->getActualPlayer());
         this->cf->setPadsVisibility(true);
        this->bRem--;
-       this->cf->resetEmpty();
-       this->doMarker();
+        if(!this->prepare())
+        {
+            this->endGame = true;
+            return;
+        }//reset, do marker
         if(this->endGame)
         {
+            this->state = 1;
+            this->aiThinking=false;
             return;
         }
        this->state = 1;
        this->aiThinking=false;
     }
+}
+bool Game::getVisibility()
+{
+    return this->cf->visibility;
 }
 
 void Game::toDo(Cell* temp)
@@ -360,17 +379,18 @@ void Game::toDo(Cell* temp)
             //this->cf->resetEmpty();
             this->gc->placeStone(temp);
             this->cf->turnStones(temp->getXPos(),temp->getYPos(),this->gc->getActualPlayer());   // turns opponents stones and gc.getActualPlayer
+           // this->cf->setPadsVisibility(false);
             if(this->gs->getGameMode() == 0)
             {
-                this->cf->setPadsVisibility(true);
+                this->cf->setPadsVisibility(false);
             }
-            this->cf->resetEmpty();
-            this->doMarker();
-            if(this->cf->getCellList()->empty())
+            //this->cf->resetEmpty();
+            if(!this->prepare())
             {
                 this->endGame = true;
                 return;
-            }
+            }//do marker;
+
             if(this->gs->getGameMode() == 0)
             {
                  state = 2;
@@ -395,6 +415,7 @@ void Game::toDo(Cell* temp)
             this->aiDo();
         }
         this->actualizeScore();
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
 void Game::clearSelPads()
@@ -479,6 +500,7 @@ void Game::freezerBody(int id)
 
 bool Game::prepare()
 {
+    bool ret = false;
     this->doMarker();
     vector < Cell*>* list;
     list = this->cf->getCellList();
@@ -492,12 +514,18 @@ bool Game::prepare()
     for(Cell* cell : (*list))
     {
         this->selectionPads.at(cell->getXPos()).at(cell->getYPos()) = true;
+        ret = true;
     }
-    return true;
+    return ret;
 }
 void Game::update()
 {
-    this->prepare();
+
+    if(!this->prepare())
+    {
+        this->endGame = true;
+        return;
+    }
     this->renderRefresh = true;
     this->waitingForInput = !this->aiThinking;
 }

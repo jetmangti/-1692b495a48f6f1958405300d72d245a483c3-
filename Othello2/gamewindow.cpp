@@ -125,11 +125,6 @@ void GameWindow::newGame(GameSetting *st) //new empty Game constructor
 
 void GameWindow::render() //render routine
 {
-
-    if(!this->gm->getRenderRefresh())
-    {
-        return;
-    }
     ui->wScore->setText("White score:"+QString::number(this->gm->getWhite()));
     ui->bScore->setText("Black score:"+QString::number(this->gm->getBlack()));
     ui->bRem->setVisible(false);
@@ -138,7 +133,7 @@ void GameWindow::render() //render routine
     {
         for(int j=0; j<this->gm->getGs()->getSize(); j++)
         {
-            if(this->selectionPads->at(j).at(i) == true && this->gm->isAiThinking()==false && this->board->at(j).at(i)->getTeam() == EMPTY) // SHOW POSSIBLE CELL PLACEMENTS
+            if(this->selectionPads->at(j).at(i) == true && this->gm->getVisibility()&& this->board->at(j).at(i)->getTeam() == EMPTY) // SHOW POSSIBLE CELL PLACEMENTS
             {
                 this->boardBtn.at(j).at(i)->setEnabled(true);
                 this->boardBtn.at(j).at(i)->setText("#");
@@ -172,7 +167,7 @@ void GameWindow::render() //render routine
                 this->boardBtn.at(j).at(i)->setText("");
                 this->boardBtn.at(j).at(i)->setIcon(QIcon());
             }
-            //this->boardBtn.at(j).at(i)->update();
+
         }
     }
 }

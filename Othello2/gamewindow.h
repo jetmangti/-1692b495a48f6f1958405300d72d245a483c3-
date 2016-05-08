@@ -74,15 +74,16 @@ public:
     {
         while(true)
         {
-            this->gw->getGm()->update();
+            //this->gw->getGm()->update();
             this->gw->render();
-            this->gw->update();
+            //this->gw->update();
             if(this->gw->getGm()->isEndGame())
             {
                 break;
             }
         }
         emit endDetected();
+        return;
     }
 signals:
     void endDetected();

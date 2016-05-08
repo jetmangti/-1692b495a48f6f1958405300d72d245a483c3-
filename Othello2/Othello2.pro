@@ -20,7 +20,9 @@ SOURCES += main.cpp \
     guigame.cpp \
     game.cpp \
     gamewindow.cpp \
-    statswindow.cpp
+    statswindow.cpp \
+    climain.cpp \
+    guimain.cpp
 
 HEADERS += \
     mainwindow.h \

@@ -40,6 +40,7 @@ private :
 
 public:
     Game();
+    ~Game();
     Game(GameSetting*);                                     //build game
     void run();                                 //run game logic
     vector <vector <Cell*>>* getBoard();        //UI output function
@@ -53,6 +54,7 @@ public:
     void recordAll();
     void saveGame();
     void loadGame();
+    bool getVisibility();
     int getWRem();
     int getBRem();
     int getBlack();
